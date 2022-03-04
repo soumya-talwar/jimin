@@ -1,0 +1,36 @@
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>jimin test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.js" integrity="sha512-4P0ZJ49OMXe3jXT+EsEaq82eNwFeyYL81LeHGzGcEhowFbTqeQ80q+NEkgsE8tHPs6aCqvi7U+XWliAjDmT5Lg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <script>
+      var classifier;
+      var video;
+      var active = false;
+
+      function preload() {
+        classifier = ml5.imageClassifier("https://teachablemachine.withgoogle.com/models/vsFbd9te6/model.json", () => console.log("classifier ready!"));
+      }
+
+      function setup() {
+        video = createCapture(VIDEO);
+        video.size(400, 260);
+        video.hide();
+        classify();
+      }
+
+      function classify() {
+        classifier.classify(video, (error, result) => {
+          let label = result[0].label.toLowerCase();
+          active = label.indexOf("spouse") == 0 ? true : false;
+          classify();
+        });
+      }
+    </script>
+  </head>
+
+</html>
