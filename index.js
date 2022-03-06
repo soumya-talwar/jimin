@@ -1,48 +1,50 @@
-// image classifier
+const express = require("express");
+const app = express();
+const http = require("http");
+const server = http.createServer(app);
+const {
+  Server
+} = require("socket.io");
+const io = new Server(server);
 
-// const puppeteer = require("puppeteer");
-// var browser, page;
-// (async () => {
-//   browser = await puppeteer.launch({
-//     args: ["--use-fake-ui-for-media-stream"]
-//   });
-//   page = await browser.newPage();
-//   await page.goto("http://127.0.0.1:3000/");
-//   page.on("console", message => {
-//     let text = message.text();
-//     if (text.indexOf("spouse") == 0) {
-//       console.log(text);
-//       // whatsapp("hey soumya!");
-//     }
-//   });
-// })();
+app.get("/", (request, response) => {
+  response.sendFile(__dirname + "/voice.html");
+});
 
+app.get("/capture", (request, response) => {
+  response.sendFile(__dirname + "/capture.html");
+});
 
-// speech to text
+server.listen(3000, () => {
+  console.log("listening on :3000");
+});
 
-// const puppeteer = require("puppeteer");
-// var browser, page;
-// (async () => {
-//   browser = await puppeteer.launch({
-//     headless: false,
-//     args: [
-//       "--window-size=0,0",
-//       "--window-position=0,0",
-//       "--enable-speech-dispatcher",
-//       "--use-fake-ui-for-media-stream"
-//     ],
-//     ignoreDefaultArgs: ["--mute-audio"]
-//   });
-//   page = await browser.newPage();
-//   await page.goto("http://127.0.0.1:3000/voice.html");
-//   page.on("console", message => {
-//     let text = message.text();
-//     console.log(text);
-//   });
-// })();
+io.on("connection", socket => {
+  socket.on("recording", text => {
+    console.log("you spoke: " + text);
+  });
+  socket.on("response", text => {
+    console.log("jimin says: " + text);
+  });
+});
 
-
-// serial communication
+const puppeteer = require("puppeteer");
+var browser, page;
+(async () => {
+  browser = await puppeteer.launch({
+    args: ["--use-fake-ui-for-media-stream"]
+  });
+  page = await browser.newPage();
+  await page.goto("http://localhost:3000/capture");
+  page.on("console", message => {
+    let text = message.text();
+    console.log(text);
+    if ((/^spouse/).test(text)) {
+      io.emit("listening", true);
+      // whatsapp("hey soumya!");
+    }
+  });
+})();
 
 // const serial = require("serialport");
 // const port = new serial("/dev/cu.usbmodem14301", {
@@ -50,11 +52,8 @@
 // });
 // const reader = require("@serialport/parser-readline");
 // const parser = port.pipe(new reader());
-
-
-
-// twilio whatsapp messaging
-
+//
+//
 // require("dotenv").config();
 // const id = process.env.ACCOUNT_SID;
 // const token = process.env.AUTH_TOKEN;
