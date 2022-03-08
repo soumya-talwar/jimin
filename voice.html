@@ -12,17 +12,33 @@
       function setup() {
         var socket = io();
         var recognition = new webkitSpeechRecognition();
+        var synthesis = window.speechSynthesis;
         recognition.lang = "en-US";
         recognition.continuous = true;
         recognition.interimResults = false;
         recognition.onresult = event => {
           let length = event.results.length;
-          console.log(event.results[length - 1][0].transcript);
-          socket.emit("recording", event.results[length - 1][0].transcript);
+          let transcript = event.results[length - 1][0].transcript;
+          console.log(transcript);
+          socket.emit("recording", transcript);
         }
         socket.on("listening", status => {
           console.log("start speaking...");
           recognition.start();
+        });
+        socket.on("respond", text => {
+          let response = new SpeechSynthesisUtterance("hey somya! you look lovely in that saree.");
+          for (let voice of synthesis.getVoices()) {
+            if (voice.name == "Google UK English Male") {
+              response.voice = voice;
+              break;
+            }
+          }
+          response.rate = 1;
+          response.pitch = 1;
+          synthesis.speak(response);
+          console.log(response);
+          socket.emit("response", response.text);
         });
       }
     </script>
