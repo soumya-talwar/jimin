@@ -23,8 +23,14 @@
           socket.emit("recording", transcript);
         }
         socket.on("listening", status => {
-          console.log("start speaking...");
-          recognition.start();
+          console.log("status: " + status);
+          if (status) {
+            console.log("start speaking...");
+            recognition.start();
+          } else {
+            console.log("stopped listening...");
+            recognition.stop();
+          }
         });
         socket.on("respond", text => {
           let response = new SpeechSynthesisUtterance("hey somya! you look lovely in that saree.");
