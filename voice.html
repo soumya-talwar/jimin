@@ -23,7 +23,6 @@
           socket.emit("recording", transcript);
         }
         socket.on("listening", status => {
-          console.log("status: " + status);
           if (status) {
             console.log("start speaking...");
             recognition.start();
@@ -33,7 +32,7 @@
           }
         });
         socket.on("respond", text => {
-          let response = new SpeechSynthesisUtterance("hey somya! you look lovely in that saree.");
+          let response = new SpeechSynthesisUtterance(text);
           for (let voice of synthesis.getVoices()) {
             if (voice.name == "Google UK English Male") {
               response.voice = voice;
