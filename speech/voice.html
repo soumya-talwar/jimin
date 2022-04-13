@@ -1,0 +1,37 @@
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>jimin test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.js" integrity="sha512-4P0ZJ49OMXe3jXT+EsEaq82eNwFeyYL81LeHGzGcEhowFbTqeQ80q+NEkgsE8tHPs6aCqvi7U+XWliAjDmT5Lg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+      function setup() {
+        let socket = io();
+        let recognition = new webkitSpeechRecognition();
+        let synthesis = window.speechSynthesis;
+        recognition.lang = "en-US";
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.onresult = event => {
+          let length = event.results.length;
+          let transcript = event.results[length - 1][0].transcript;
+          socket.emit("speech", transcript);
+          recognition.stop();
+        }
+        socket.on("activate", status => {
+          if (status) {
+            console.log("start speaking...");
+            recognition.start();
+          } else {
+            console.log("stopped listening...");
+            recognition.stop();
+          }
+        });
+      }
+    </script>
+  </head>
+
+</html>

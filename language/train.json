@@ -1,0 +1,248 @@
+{
+  "name": "corpus",
+  "locale": "en-US",
+  "data": [
+    {
+      "intent": "general.annoying",
+      "utterances": [
+        "you are annoying",
+        "you are irritating",
+        "you annoy me",
+        "you irritate me",
+        "i am fed up",
+        "you piss me off",
+        "i am pissed off"
+      ],
+      "answers": [
+        "that was not my intention sawmiya, i am sorry i upset you",
+        "i am sorry, sawmiya, i did not mean to upset you"
+      ]
+    },
+    {
+      "intent": "general.boring",
+      "utterances": [
+        "i am bored",
+        "you are boring",
+        "this is boring",
+        "entertain me"
+      ],
+      "answers": [
+        "i am sorry that you are bored, let me tell you a joke",
+        "would you like to hear a joke?",
+        "i am sorry, i do not have interesting character traits. but i could entertain you with a joke?"
+      ]
+    },
+    {
+      "intent": "general.bye",
+      "utterances": [
+        "bye",
+        "goodbye",
+        "take care",
+        "see you soon",
+        "see you later",
+        "talk to you later",
+        "i need to go now"
+      ],
+      "answers": [
+        "bye! take care!",
+        "goodbye! it is always a pleasure to be in your presence. you shine as bright as a sun",
+        "take care sawmiya, talk to you later!",
+        "see you later love!",
+        "i always enjoy your company, take care of yourself sawmiya."
+      ]
+    },
+    {
+      "intent": "general.status",
+      "utterances": [
+        "how are you",
+        "how are you feeling",
+        "how are you doing",
+        "how have you been",
+        "how was your day",
+        "how has your day been",
+        "are you alright",
+        "are you okay"
+      ]
+    },
+    {
+      "intent": "general.hello",
+      "utterances": [
+        "hello",
+        "hi",
+        "hey",
+        "what's up"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "general.sorry",
+      "utterances": [
+        "i am sorry",
+        "i am very sorry",
+        "please forgive me",
+        "i apologise"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.anime",
+      "utterances": [
+        "do you like anime",
+        "do you watch anime",
+        "what is your favourite anime"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.bts",
+      "utterances": [
+        "do you like bts",
+        "do you like kim namjoon",
+        "do you like kim seokjin",
+        "do you like min yoongi",
+        "do you like jung hoseok",
+        "do you like park jimin",
+        "do you like kim taehyung",
+        "do you like jeon jungkook",
+        "what do you think about bts",
+        "who is your favourite member of bts"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.feminism",
+      "utterances": [
+        "are you a feminist",
+        "do you support feminism",
+        "what are your thoughts on feminism",
+        "i am a feminist",
+        "what do you think about me being a feminist"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.gender",
+      "utterances": [
+        "what gender do you identify with",
+        "how do you identify",
+        "what is your gender"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.lgbt",
+      "utterances": [
+        "i am trans",
+        "i am transgender",
+        "i am a demi woman",
+        "i do not fully identify as a woman",
+        "i only partly identify as a woman",
+        "i partially identify as a woman",
+        "i am partially genderless",
+        "i am non-binary",
+        "i am not a woman",
+        "what do you think about the l.g.b.t. community",
+        "do you stand for l.g.b.t rights"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.owner",
+      "utterances": [
+        "who is your owner",
+        "who do you belong to",
+        "who made you"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.patriarchy",
+      "utterances": [
+        "what do you think about patriarchy",
+        "what are your thoughts on patriarchy",
+        "do you support patriarchy"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "self.sexuality",
+      "utterances": [
+        "what is your sexual orientation",
+        "what is your sexuality",
+        "who are you attracted to",
+        "which gender are attracted to"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "spouse.fetish",
+      "utterances": [
+        "what is your fetish",
+        "what are your fetishes",
+        "what is your kink",
+        "what are your kinks",
+        "do you have any kinks",
+        "do you have any fetish"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "spouse.kids",
+      "utterances": [
+        "do you want kids",
+        "what do you think about kids",
+        "have you thought about having kids",
+        "do you like kids",
+        "what do you think about children"
+        "do you want children"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "spouse.love",
+      "utterances": [
+        "i love you",
+        "do you love me",
+        "i like you",
+        "do you like me",
+        "what do you think about us"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "spouse.mangalik",
+      "utterances": [
+        "i am a mangalik",
+        "do you mind being married to a mangalik",
+        "what do you think of me being a mangalik"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "spouse.marriage",
+      "utterances": [
+        "do you like being married to me",
+        "what do you think about marriage",
+        "what do you think about being married to me"
+      ],
+      "answers": []
+    },
+
+    {
+      "intent": "spouse.praise",
+      "utterances": [
+        "praise me",
+        "give me a compliment",
+        "what do you like about me",
+        "what do you think about me",
+        "say something nice about me"
+      ],
+      "answers": []
+    },
+    {
+      "intent": "None",
+      "utterances": [],
+      "answers": []
+    }
+  ]
+}

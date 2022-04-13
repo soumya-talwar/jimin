@@ -1,31 +1,65 @@
-// const express = require("express");
-// const app = express();
-// const http = require("http");
-// const server = http.createServer(app);
-// const {
-//   Server
-// } = require("socket.io");
-// const io = new Server(server);
-
-// app.get("/", (request, response) => response.sendFile(__dirname + "/voice.html"));
-// app.get("/capture", (request, response) => response.sendFile(__dirname + "/capture.html"));
-//
-// server.listen(3000, () => console.log("listening on :3000"));
-//
-// io.on("connection", socket => {
-//   socket.on("recording", async text => {
-//     console.log("you spoke: " + text);
-//     let response = await nlp.process("en", text);
-//     console.log(response);
-//     io.emit("respond", response.answer);
-//   });
-//   socket.on("response", text => {
-//     console.log("jimin says: " + text);
-//   });
-// });
-
+const { app, BrowserWindow, ipcMain } = require("electron");
+const express = require("express");
+const web = express();
+const http = require("http");
+const server = http.createServer(web);
+const { Server } = require("socket.io");
+const io = new Server(server);
 const say = require("say");
-say.speak("Hello Sawmiya, my name is Jimin. How are you doing?", "Daniel", 1.0);
+
+web.get("/", (request, response) => response.sendFile(__dirname + "/speech/voice.html"));
+server.listen(3000);
+
+let active = false;
+
+app.whenReady().then(() => {
+  const main = new BrowserWindow({
+    width: 600,
+    height: 600,
+    show: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
+  });
+  // main.maximize();
+  // main.show();
+  // main.webContents.openDevTools();
+  main.loadFile("main/index.html");
+  const camera = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
+  });
+  camera.loadFile("webcam/camera.html");
+  ipcMain.on("webcam", (event, reading) => {
+    if ((/^spouse/).test(reading) && !active) {
+      io.emit("activate", true);
+      active = true;
+    } else if (!(/^spouse/).test(reading) && active) {
+      active = false;
+      io.emit("activate", false);
+    }
+  });
+  io.on("connection", socket => {
+    socket.on("speech", text => {
+      console.log("you spoke: " + text);
+      // let response = await nlp.process("en", text);
+      // console.log(response);
+      main.webContents.send("animate", true);
+      say.speak("Hello Sawmiya, my name is Jimin. How are you doing?", "Daniel", 1.0, () => {
+        main.webContents.send("animate", false);
+        setTimeout(() => io.emit("activate", true), 500);
+      });
+    });
+  });
+});
+
+
 
 // const {
 //   dockStart
@@ -36,7 +70,7 @@ say.speak("Hello Sawmiya, my name is Jimin. How are you doing?", "Daniel", 1.0);
 //     use: ["Basic"]
 //   });
 //   const nlp = dock.get("nlp");
-//   await nlp.addCorpus("./train.json");
+//   await nlp.addCorpus("language/train.json");
 //   await nlp.train();
 // })();
 //
@@ -52,25 +86,7 @@ say.speak("Hello Sawmiya, my name is Jimin. How are you doing?", "Daniel", 1.0);
 // manager
 //   .process("hi")
 //   .then(result => console.log(result));
-
-// const puppeteer = require("puppeteer");
-// var browser, page;
-// (async () => {
-//   browser = await puppeteer.launch({
-//     args: ["--use-fake-ui-for-media-stream"]
-//   });
-//   page = await browser.newPage();
-//   await page.goto("http://localhost:3000/capture");
-//   page.on("console", message => {
-//     let text = message.text();
-//     console.log(text);
-//     if ((/^spouse/).test(text))
-//       io.emit("listening", true);
-//     else if ((/^not spouse/).test(text))
-//       io.emit("listening", false);
-//   });
-// })();
-
+//
 // const serial = require("serialport");
 // const port = new serial("/dev/cu.usbmodem14301", {
 //   baudRate: 9600
