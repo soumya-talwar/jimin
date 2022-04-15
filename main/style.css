@@ -1,3 +1,45 @@
-#image {
+* {
+  color: #000;
+  font-family: "Inter";
+}
+
+.main {
   height: 100vh;
+}
+
+#image {
+  height: 65vh;
+}
+
+h1, h4, h5 {
+  font-family: "Circular Std";
+  letter-spacing: 2px;
+}
+
+h1 {
+  font-size: 4rem;
+  padding-top: 1rem;
+}
+
+h4 {
+  font-size: 2rem;
+}
+
+h5 {
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+}
+
+#time, #weather, #temp, #humid, #rain, #wind, #soil, #jimin, #creator {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+#time {
+  text-underline-offset: 0.25rem;
+}
+
+a, a:hover {
+  color: inherit;
+  text-underline-offset: 0.25rem;
 }
