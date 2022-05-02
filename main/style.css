@@ -1,14 +1,28 @@
 * {
   color: #000;
-  font-family: "Inter";
+  font-family: "Inter", sans-serif;
+  scroll-behavior: smooth;
 }
 
-.main {
-  height: 100vh;
+body {
+  background-color: #F5F5F5;
+  overflow-y: hidden;
 }
 
-#image {
-  height: 65vh;
+.full {
+  height: 100%;
+}
+
+.frame {
+  height: 70vh;
+  background-color: #FFF;
+  border-radius: 20px;
+  box-shadow: 0 5px 14px #DBDBDB;
+}
+
+#avatar {
+  height: 90%;
+  border-radius: 20px;
 }
 
 h1, h4, h5 {
@@ -18,7 +32,8 @@ h1, h4, h5 {
 
 h1 {
   font-size: 4rem;
-  padding-top: 1rem;
+  padding-top: 1.5rem;
+  line-height: 6rem;
 }
 
 h4 {
@@ -26,20 +41,41 @@ h4 {
 }
 
 h5 {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   letter-spacing: 3px;
 }
 
-#time, #weather, #temp, #humid, #rain, #wind, #soil, #jimin, #creator {
+#infobar {
+  padding-top: 2rem;
+}
+
+.label, #jimin, #seokjin, #settings, #listen {
   font-size: 0.8rem;
   letter-spacing: 1px;
 }
 
-#time {
-  text-underline-offset: 0.25rem;
+.value {
+  font-size: 1.1rem;
+  letter-spacing: 1px;
 }
 
-a, a:hover {
-  color: inherit;
-  text-underline-offset: 0.25rem;
+#jimin {
+  background-color: #A8A8A8;
+  border: none;
+  box-shadow: 0 3px 6px #ADADAD;
+  transition: all 0.5s ease-in;
+}
+
+#seokjin {
+  color: #777777;
+}
+
+#light {
+  background-color: #2222FF;
+  height: 7px;
+  width: 7px;
+}
+
+#voice, #type {
+  transition: all 0.5s ease-in;
 }
