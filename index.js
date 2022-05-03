@@ -84,24 +84,29 @@ app.whenReady().then(() => {
     }
   });
   io.on("connection", socket => {
-    socket.on("speech", text => {
-      manager
-        .process(text)
-        .then(result => {
-          speaking = true;
-          main.webContents.send(voice ? "listen" : "read", false);
-          main.webContents.send("converse", [text, result.answer]);
-          say.speak(result.answer, "Daniel", 1.0, () => {
-            setTimeout(() => {
-              speaking = false;
-              main.webContents.send("converse", []);
-              main.webContents.send(voice ? "listen" : "read", true);
-              io.emit("activate", true);
-            }, 500);
-          });
-        });
-    });
+    socket.on("speech", text => converse(text));
   });
+  ipcMain.on("chat", (event, message) => {
+    converse(message);
+  });
+
+  function converse(text) {
+    manager
+      .process(text)
+      .then(result => {
+        speaking = true;
+        main.webContents.send(voice ? "listen" : "read", false);
+        main.webContents.send("converse", [text, result.answer]);
+        say.speak(result.answer, "Daniel", 1.0, () => {
+          setTimeout(() => {
+            speaking = false;
+            main.webContents.send("converse", []);
+            main.webContents.send(voice ? "listen" : "read", true);
+            io.emit("activate", true);
+          }, 500);
+        });
+      });
+  }
   // parser.on("data", reading => main.webContents.send("moisture", reading));
 });
 

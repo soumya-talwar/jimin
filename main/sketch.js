@@ -22,19 +22,22 @@ function setup() {
     }, 400 * 5);
   });
   ipcRenderer.on("listen", (event, status) => {
-    $("#voice").css({
+    $("#mic").css({
       "background-color": `${status ? "#FFFFFF" : "transparent"}`,
       "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
     });
   });
-  $("#voice").click(() => ipcRenderer.send("mic", true));
+  $("#mic").click(() => ipcRenderer.send("mic", true));
   ipcRenderer.on("read", (event, status) => {
-    $("#type").css({
+    $("input").css({
+      "opacity": `${status ? 1 : 0}`
+    });
+    $("#keyboard").css({
       "background-color": `${status ? "#FFFFFF" : "transparent"}`,
       "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
     });
   });
-  $("#type").click(() => ipcRenderer.send("keyboard", true));
+  $("#keyboard").click(() => ipcRenderer.send("keyboard", true));
   ipcRenderer.on("converse", (event, data) => {
     if (data.length > 0) {
       speak = setInterval(() => {
@@ -44,6 +47,10 @@ function setup() {
       }, 200);
       $("h4").html("soumya: " + data[0].toLowerCase());
       data[1] = data[1].replace("sawmiya", "soumya").toLowerCase();
+      $("h1").css({
+        "font-size": "4rem",
+        "line-height": "6rem"
+      });
       let index = 1;
       let type = setInterval(() => {
         $("h1").html(data[1].substring(0, index++));
@@ -56,6 +63,10 @@ function setup() {
       clearInterval(speak);
       $("#avatar").attr("src", "assets/jimin 1.png");
     }
+  });
+  $("input").keyup(event => {
+    if (event.key == "Enter")
+      ipcRenderer.send("chat", $("input").val())
   });
   // ipcRenderer.on("moisture", (event, reading) => $("#soil").html(reading));
 }
