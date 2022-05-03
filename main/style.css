@@ -20,6 +20,10 @@ body {
   box-shadow: 0 5px 14px #DBDBDB;
 }
 
+.frame:last-of-type {
+  padding: 3rem;
+}
+
 #avatar {
   height: 90%;
   border-radius: 20px;

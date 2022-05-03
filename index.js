@@ -17,15 +17,15 @@ const data = fs.readFileSync("nlp/model.nlp", "utf8");
 const manager = new NlpManager();
 manager.import(data);
 
-const { SerialPort } = require("serialport");
-const port = new SerialPort({
-  path: "/dev/cu.usbmodem14301",
-  baudRate: 9600
-});
-const { ReadlineParser } = require("@serialport/parser-readline");
-const parser = port.pipe(new ReadlineParser({
-  delimiter: "\r\n"
-}));
+// const { SerialPort } = require("serialport");
+// const port = new SerialPort({
+//   path: "/dev/cu.usbmodem14301",
+//   baudRate: 9600
+// });
+// const { ReadlineParser } = require("@serialport/parser-readline");
+// const parser = port.pipe(new ReadlineParser({
+//   delimiter: "\r\n"
+// }));
 
 let active = false;
 
@@ -38,6 +38,7 @@ app.whenReady().then(() => {
     }
   });
   main.loadFile("main/index.html");
+
   const camera = new BrowserWindow({
     width: 800,
     height: 600,
@@ -74,7 +75,7 @@ app.whenReady().then(() => {
         });
     });
   });
-  parser.on("data", reading => main.webContents.send("moisture", reading));
+  // parser.on("data", reading => main.webContents.send("moisture", reading));
 });
 
 // (async () => {

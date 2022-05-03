@@ -30,11 +30,13 @@ function setup() {
         let frame = parseInt(src.match(/\d/)[0]);
         $("#avatar").attr("src", `assets/jimin ${frame == 1 ? 2 : 1}.png`);
       }, 200);
-      $("h4").html("soumya: " + data[0]);
-      data[1] = data[1].replace("sawmiya", "soumya");
+      $("h4").html("soumya: " + data[0].toLowerCase());
+      data[1] = data[1].replace("sawmiya", "soumya").toLowerCase();
       let index = 1;
       let type = setInterval(() => {
         $("h1").html(data[1].substring(0, index++));
+        if ($("h1").height() >= $("h1").parent().height() - 200)
+          resize();
         if (index > data[1].length)
           clearInterval(type);
       }, 100);
@@ -43,7 +45,16 @@ function setup() {
       $("#avatar").attr("src", "assets/jimin 1.png");
     }
   });
-  ipcRenderer.on("moisture", (event, reading) => $("#soil").html(reading));
+  // ipcRenderer.on("moisture", (event, reading) => $("#soil").html(reading));
+}
+
+function resize() {
+  $("h1").css({
+    "font-size": ($("h1").css("font-size").match(/[\d.]+/)[0] - 2) + "px",
+    "line-height": ($("h1").css("line-height").match(/[\d.]+/)[0] - 1.5) + "px"
+  });
+  if ($("h1").height() >= $("h1").parent().height() - 200)
+    resize();
 }
 
 async function update() {
@@ -79,7 +90,7 @@ async function update() {
   let minutes = date.getMinutes();
   if (minutes < 10)
     minutes = "0" + minutes;
-  // $(".label").eq(0).html(day + " " + month + ", " + year);
+  $(".label").eq(0).html(day + " " + month + ", " + year);
   $("#time").html(hours + ":" + minutes + (pm ? "PM" : "AM"));
   await fetch("https://api.openweathermap.org/data/2.5/weather?lat=13.101556425270013&lon=77.57196329497141&units=metric&appid=3d410dbee551d99b36d71387bbe879ec")
     .then(response => response.json())
