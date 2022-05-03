@@ -28,6 +28,8 @@ manager.import(data);
 // }));
 
 let active = false;
+let voice = true;
+let speaking = false;
 
 app.whenReady().then(() => {
   const main = new BrowserWindow({
@@ -52,12 +54,33 @@ app.whenReady().then(() => {
   ipcMain.on("webcam", (event, reading) => {
     if ((/^spouse/).test(reading) && !active) {
       main.webContents.send("activate", true);
-      io.emit("activate", true);
+      main.webContents.send(voice ? "listen" : "read", true);
+      if (voice)
+        io.emit("activate", true);
       active = true;
     } else if (!(/^spouse/).test(reading) && active) {
+      say.stop();
       main.webContents.send("activate", false);
-      io.emit("activate", false);
+      main.webContents.send(voice ? "listen" : "read", false);
+      if (voice)
+        io.emit("activate", false);
       active = false;
+    }
+  });
+  ipcMain.on("mic", (event, status) => {
+    if (active && !speaking) {
+      voice = true;
+      io.emit("activate", true);
+      main.webContents.send("listen", true);
+      main.webContents.send("read", false);
+    }
+  });
+  ipcMain.on("keyboard", (event, status) => {
+    if (active && !speaking) {
+      voice = false;
+      io.emit("activate", false);
+      main.webContents.send("read", true);
+      main.webContents.send("listen", false);
     }
   });
   io.on("connection", socket => {
@@ -65,10 +88,14 @@ app.whenReady().then(() => {
       manager
         .process(text)
         .then(result => {
+          speaking = true;
+          main.webContents.send(voice ? "listen" : "read", false);
           main.webContents.send("converse", [text, result.answer]);
           say.speak(result.answer, "Daniel", 1.0, () => {
             setTimeout(() => {
+              speaking = false;
               main.webContents.send("converse", []);
+              main.webContents.send(voice ? "listen" : "read", true);
               io.emit("activate", true);
             }, 500);
           });

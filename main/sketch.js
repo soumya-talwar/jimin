@@ -9,10 +9,8 @@ function setup() {
     $("#jimin").css({
       "background-color": `${status ? "#2222FF" : "#9F9F9F"}`
     });
-    $("#voice").css({
-      "background-color": `${status ? "#FFFFFF" : "transparent"}`,
-      "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
-    });
+    $("h4").html("");
+    $("h1").html(status ? "" : "sorry, i only speak to my wife");
     let blink = setInterval(() => {
       let src = $("#avatar").attr("src");
       let frame = parseInt(src.match(/\d/)[0]);
@@ -23,6 +21,20 @@ function setup() {
       $("#avatar").attr("src", `assets/jimin ${status ? 1 : 4}.png`);
     }, 400 * 5);
   });
+  ipcRenderer.on("listen", (event, status) => {
+    $("#voice").css({
+      "background-color": `${status ? "#FFFFFF" : "transparent"}`,
+      "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
+    });
+  });
+  $("#voice").click(() => ipcRenderer.send("mic", true));
+  ipcRenderer.on("read", (event, status) => {
+    $("#type").css({
+      "background-color": `${status ? "#FFFFFF" : "transparent"}`,
+      "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
+    });
+  });
+  $("#type").click(() => ipcRenderer.send("keyboard", true));
   ipcRenderer.on("converse", (event, data) => {
     if (data.length > 0) {
       speak = setInterval(() => {
