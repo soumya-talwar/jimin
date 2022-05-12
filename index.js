@@ -11,6 +11,15 @@ server.listen(3000);
 const say = require("say");
 
 // const { dockStart } = require("@nlpjs/basic");
+// (async () => {
+//   const dock = await dockStart({
+//     use: ["Basic"]
+//   });
+//   const nlp = dock.get("nlp");
+//   await nlp.addCorpus("nlp/train.json");
+//   await nlp.train();
+// })();
+
 const fs = require("fs");
 const { NlpManager } = require("node-nlp");
 const data = fs.readFileSync("nlp/model.nlp", "utf8");
@@ -30,6 +39,19 @@ manager.import(data);
 let active = false;
 let voice = true;
 let speaking = false;
+let jokes = [
+  "What flowers kiss the best? Tulips!",
+  "What tree can you hold hands with? A palm tree!",
+  "Did you know I once cut down a tree just by looking at it? It's true, I saw it with my own eyes!",
+  "You know I am really good at algebra? I can always find the root of the equation.",
+  "My friend has a lot of friends. He's always branching out.",
+  "How do trees get on the internet? They log on!",
+  "I got fired by the florist. Apparently I took too many leaves.",
+  "What did the young plant say to the old plant? Okay, bloomer.",
+  "My neighbour was afraid to plant a mango tree. I told him to 'grow a pear'.",
+  "Why did the tomato blush? Because he saw the salad dressing!"
+];
+let knock = ["Knock. Knock", "Leaf", "Leaf me alone"];
 
 app.whenReady().then(() => {
   const main = new BrowserWindow({
@@ -95,26 +117,23 @@ app.whenReady().then(() => {
       .process(text)
       .then(result => {
         speaking = true;
-        main.webContents.send(voice ? "listen" : "read", false);
         main.webContents.send("converse", [text, result.answer]);
-        say.speak(result.answer, "Daniel", 1.0, () => {
-          setTimeout(() => {
+        setTimeout(() => {
+          say.speak(result.answer, "Daniel", 1.0, () => {
             speaking = false;
             main.webContents.send("converse", []);
-            main.webContents.send(voice ? "listen" : "read", true);
-            io.emit("activate", true);
-          }, 500);
-        });
+            setTimeout(() => {
+              main.webContents.send(voice ? "listen" : "read", true);
+              if (voice)
+                io.emit("activate", true);
+            }, 500);
+          });
+        }, 1000);
+        main.webContents.send(voice ? "listen" : "read", false);
       });
   }
-  // parser.on("data", reading => main.webContents.send("moisture", reading));
+  // parser.on("data", reading => {
+  //   let readings = reading.split(" ");
+  //   main.webContents.send("sensors", readings);
+  // });
 });
-
-// (async () => {
-//   const dock = await dockStart({
-//     use: ["Basic"]
-//   });
-//   const nlp = dock.get("nlp");
-//   await nlp.addCorpus("nlp/train.json");
-//   await nlp.train();
-// })();
