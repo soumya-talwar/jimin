@@ -26,16 +26,35 @@ const data = fs.readFileSync("nlp/model.nlp", "utf8");
 const manager = new NlpManager();
 manager.import(data);
 
-// const { SerialPort } = require("serialport");
-// const port = new SerialPort({
-//   path: "/dev/cu.usbmodem14301",
-//   baudRate: 9600
-// });
-// const { ReadlineParser } = require("@serialport/parser-readline");
-// const parser = port.pipe(new ReadlineParser({
-//   delimiter: "\r\n"
-// }));
+const { SerialPort } = require("serialport");
+const port = new SerialPort({
+  path: "/dev/cu.usbmodem14301",
+  baudRate: 9600
+});
+const { ReadlineParser } = require("@serialport/parser-readline");
+const parser = port.pipe(new ReadlineParser({
+  delimiter: "\r\n"
+}));
 
+let husbands = {
+  "jimin": {
+    values: [],
+    average: null
+  },
+  "seokjin": {
+    values: [],
+    average: null
+  }
+};
+let husband = undefined;
+let thresholds = [25, 50, 300, 500];
+let totals = [
+  [25, 25],
+  [30, 30],
+  [300, 924],
+  [500, 524]
+];
+let weights = [5, 3, 4, 1];
 let active = false;
 let voice = true;
 let speaking = false;
@@ -89,6 +108,9 @@ app.whenReady().then(() => {
       active = false;
     }
   });
+  ipcMain.on("husband", (event, member) => {
+    main.webContents.send("husband", member);
+  });
   ipcMain.on("mic", (event, status) => {
     if (active && !speaking) {
       voice = true;
@@ -117,9 +139,10 @@ app.whenReady().then(() => {
       .process(text)
       .then(result => {
         speaking = true;
-        main.webContents.send("converse", [text, result.answer]);
+        let reply = result.answers[0].answer;
+        main.webContents.send("converse", [text, reply]);
         setTimeout(() => {
-          say.speak(result.answer, "Daniel", 1.0, () => {
+          say.speak(reply, "Daniel", 1.0, () => {
             speaking = false;
             main.webContents.send("converse", []);
             setTimeout(() => {
@@ -132,8 +155,30 @@ app.whenReady().then(() => {
         main.webContents.send(voice ? "listen" : "read", false);
       });
   }
-  // parser.on("data", reading => {
-  //   let readings = reading.split(" ");
-  //   main.webContents.send("sensors", readings);
-  // });
+  parser.on("data", reading => {
+    let readings = reading.split(" ");
+    main.webContents.send("sensors", readings);
+    for (let i = 0; i < readings.length; i++) {
+      let value = readings[i];
+      if (i == 1 ? (value < thresholds[i]) : (value > thresholds[i]))
+        husbands.jimin.values[i] = i == 1 ? ((thresholds[i] - value) * weights[i] / totals[i][0]) : ((value - thresholds[i]) * weights[i] / totals[i][1]);
+      else
+        husbands.seokjin.values[i] = i == 1 ? ((value - thresholds[i]) * weights[i] / totals[i][1]) : ((thresholds[i] - value) * weights[i] / totals[i][0]);
+    }
+    for (let husband in husbands) {
+      let sum = 0;
+      for (let value of husbands[husband].values) {
+        if (value)
+          sum += value;
+      }
+      husbands[husband].average = sum / 13;
+    }
+    if (husbands.jimin.average >= husbands.seokjin.average && husband !== "jimin") {
+      husband = "jimin";
+      main.webContents.send("husband", husband);
+    } else if (husbands.seokjin.average >= husbands.jimin.average && husband !== "seokjin") {
+      husband = "seokjin";
+      main.webContents.send("husband", husband);
+    }
+  });
 });

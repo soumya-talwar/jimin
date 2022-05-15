@@ -66,7 +66,7 @@ input::placeholder {
   padding-top: 2rem;
 }
 
-.label, #jimin, #seokjin {
+.label, #jimin, #seokjin, #hoseok {
   font-size: 0.8rem;
   letter-spacing: 1px;
 }
@@ -76,15 +76,19 @@ input::placeholder {
   letter-spacing: 1px;
 }
 
-#jimin {
-  background-color: #A8A8A8;
-  border: none;
-  box-shadow: 0 3px 6px #ADADAD;
+#jimin, #seokjin {
+  color: #707070;
+  background-color: transparent;
+  border-color: #707070;
+  box-shadow: 0 3px 6px transparent;
   transition: all 0.5s ease-in;
 }
 
-#seokjin {
-  color: #777777;
+#hoseok {
+  color: #707070;
+  background-color: transparent;
+  border: none;
+  cursor: default;
 }
 
 #mic, #keyboard {

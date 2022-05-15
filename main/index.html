@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Jimin-ssi</title>
+    <title>Harem</title>
     <script>
       if (typeof module === "object") {
         window.module = module;
@@ -26,10 +26,6 @@
   <body>
     <div class="fixed-top d-flex justify-content-between px-5 mx-5" id="infobar">
       <div class="d-flex flex-column justify-content-center align-items-center">
-        <p class="label"></p>
-        <p class="value" id="time"></p>
-      </div>
-      <div class="d-flex flex-column justify-content-center align-items-center">
         <p class="label">temperature</p>
         <p class="value" id="temp"></p>
       </div>
@@ -42,17 +38,13 @@
         <p class="value" id="light"></p>
       </div>
       <div class="d-flex flex-column justify-content-center align-items-center">
-        <p class="label">wind</p>
-        <p class="value" id="wind"></p>
-      </div>
-      <div class="d-flex flex-column justify-content-center align-items-center">
         <p class="label">soil moisture</p>
         <p class="value" id="soil"></p>
       </div>
     </div>
     <div class="d-flex align-items-center full p-0">
       <div class="frame mx-5 d-flex flex-column justify-content-end">
-        <img src="assets/jimin 4.png" id="avatar">
+        <img id="avatar">
       </div>
       <div class="frame flex-grow-1 me-5 d-flex flex-column">
         <div class="flex-grow-1 d-flex flex-column justify-content-center py-5">
@@ -64,8 +56,9 @@
     </div>
     <div class="fixed-bottom d-flex justify-content-between p-5 py-4">
       <div class="d-flex align-items-center gap-3">
-        <button class="rounded-pill px-4 py-2 text-white" id="jimin">jimin (idle)</button>
-        <span class="mx-3" id="seokjin">seokjin (coming soon)</span>
+        <button class="border rounded-pill px-4 py-2" id="jimin">jimin (idle)</button>
+        <button class="border rounded-pill px-4 py-2" id="seokjin">seokjin (idle)</button>
+        <button class="px-4 py-2" id="hoseok">hoseok (coming soon)</button>
       </div>
       <div class="d-flex align-items-center gap-1">
         <span class="material-icons p-2 mx-2 p-3 rounded-circle" id="mic">mic</span>

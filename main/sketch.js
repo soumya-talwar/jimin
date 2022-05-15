@@ -1,13 +1,41 @@
 const { ipcRenderer } = require("electron");
 let speak;
+let husband;
 
 function setup() {
-  update();
-  setInterval(update, 1000 * 60);
+  ipcRenderer.on("husband", (event, member) => {
+    husband = member;
+    let src = $("#avatar").attr("src");
+    if (src) {
+      let frame = parseInt(src.match(/\d/)[0]);
+      $("#avatar").attr("src", `assets/${husband} ${frame}.png`);
+      $(`#${husband}`).html(`${husband} (active)`);
+      $(`#${husband}`).css({
+        "background-image": "linear-gradient(45deg, #B540FF, #2222FF)",
+        "color": "#FFFFFF",
+        "border-color": "transparent",
+        "box-shadow": "0 3px 6px #DBDBDB"
+      });
+      let nothusband = husband == "jimin" ? "seokjin" : "jimin";
+      $(`#${nothusband}`).css({
+        "background-image": "linear-gradient(45deg, transparent, transparent)",
+        "color": "#707070",
+        "border-color": "#707070",
+        "box-shadow": "0 3px 6px transparent"
+      });
+      $(`#${nothusband}`).html(`${nothusband} (idle)`);
+    } else {
+      $("#avatar").attr("src", `assets/${husband} 4.png`);
+    }
+  });
+  $("#jimin, #seokjin").click(event => ipcRenderer.send("husband", event.target.id));
   ipcRenderer.on("activate", (event, status) => {
-    $("#jimin").html(`jimin (${status ? "active" : "idle"})`);
-    $("#jimin").css({
-      "background-color": status ? "#2222FF" : "#9F9F9F"
+    $(`#${husband}`).html(`${husband} (${status ? "active" : "idle"})`);
+    $(`#${husband}`).css({
+      "background-image": `linear-gradient(45deg, ${status ? "#B540FF, #2222FF" : "transparent, transparent"})`,
+      "color": status ? "#FFFFFF" : "#707070",
+      "border-color": status ? "transparent" : "#707070",
+      "box-shadow": `0 3px 6px ${status ? "#DBDBDB": "transparent"}`
     });
     $("h4").html("");
     $("h1").css({
@@ -21,17 +49,17 @@ function setup() {
     let blink = setInterval(() => {
       let src = $("#avatar").attr("src");
       let frame = parseInt(src.match(/\d/)[0]);
-      $("#avatar").attr("src", `assets/jimin ${frame == 1 ? 3 : 1}.png`);
+      $("#avatar").attr("src", `assets/${husband} ${frame == 1 ? 3 : 1}.png`);
     }, 200);
     setTimeout(() => {
       clearInterval(blink);
-      $("#avatar").attr("src", `assets/jimin ${status ? 1 : 4}.png`);
+      $("#avatar").attr("src", `assets/${husband} ${status ? 1 : 4}.png`);
     }, 200 * 5);
   });
   ipcRenderer.on("listen", (event, status) => {
     $("#mic").css({
       "background-color": status ? "#FFFFFF" : "transparent",
-      "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
+      "box-shadow": `0 0 11px ${status ? "#B540FF" : "transparent"}`
     });
   });
   $("#mic").click(() => ipcRenderer.send("mic", true));
@@ -41,7 +69,7 @@ function setup() {
     });
     $("#keyboard").css({
       "background-color": status ? "#FFFFFF" : "transparent",
-      "box-shadow": `0 0 11px ${status ? "#2222FF" : "transparent"}`
+      "box-shadow": `0 0 11px ${status ? "#B540FF" : "transparent"}`
     });
   });
   $("#keyboard").click(() => ipcRenderer.send("keyboard", true));
@@ -60,32 +88,24 @@ function setup() {
         speak = setInterval(() => {
           let src = $("#avatar").attr("src");
           let frame = parseInt(src.match(/\d/)[0]);
-          $("#avatar").attr("src", `assets/jimin ${frame == 1 ? 2 : 1}.png`);
+          $("#avatar").attr("src", `assets/${husband} ${frame == 1 ? 2 : 1}.png`);
         }, 200);
       }, 1000);
-      // let index = 1;
-      // let type = setInterval(() => {
-      //   $("h1").html(data[1].substring(0, index++));
-      //   if ($("h1").height() >= $("h1").parent().height() - 200)
-      //     resize();
-      //   if (index > data[1].length)
-      //     clearInterval(type);
-      // }, 100);
     } else {
       clearInterval(speak);
-      $("#avatar").attr("src", "assets/jimin 1.png");
+      $("#avatar").attr("src", `assets/${husband} 1.png`);
     }
   });
   $("input").keyup(event => {
     if (event.key == "Enter")
       ipcRenderer.send("chat", $("input").val())
   });
-  // ipcRenderer.on("sensors", (event, readings) => {
-  //   $("#temp").html(readings[0]);
-  //   $("#humid").html(readings[1]);
-  //   $("#light").html(readings[2]);
-  //   $("#soil").html(readings[4]);
-  // });
+  ipcRenderer.on("sensors", (event, readings) => {
+    $("#temp").html(readings[0]);
+    $("#humid").html(readings[1]);
+    $("#light").html(readings[2]);
+    $("#soil").html(readings[3]);
+  });
 }
 
 function resize() {
@@ -95,44 +115,4 @@ function resize() {
   });
   if ($("h1").height() >= $("h1").parent().height() - $("h4").height() - $("input").height())
     resize();
-}
-
-async function update() {
-  let date = new Date();
-  let day = date.getDate();
-  if (day > 3 && day < 21)
-    day += "th";
-  else {
-    switch (day % 10) {
-      case 1:
-        day += "st";
-        break;
-      case 2:
-        day += "nd";
-        break;
-      case 3:
-        day += "rd";
-        break;
-      default:
-        day += "th";
-    }
-  }
-  let month = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"][date.getMonth()];
-  let year = date.getFullYear();
-  let hours = date.getHours();
-  let pm = false;
-  if (hours > 12) {
-    hours %= 12;
-    pm = true;
-  }
-  if (hours < 10)
-    hours = "0" + hours;
-  let minutes = date.getMinutes();
-  if (minutes < 10)
-    minutes = "0" + minutes;
-  $(".label").eq(0).html(day + " " + month + ", " + year);
-  $("#time").html(hours + ":" + minutes + (pm ? "PM" : "AM"));
-  await fetch("https://api.openweathermap.org/data/2.5/weather?lat=13.101556425270013&lon=77.57196329497141&units=metric&appid=3d410dbee551d99b36d71387bbe879ec")
-    .then(response => response.json())
-    .then(data => $("#wind").html(round(data.wind.speed * 3.6, 2) + "km/h"));
 }

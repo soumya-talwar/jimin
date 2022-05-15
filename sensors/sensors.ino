@@ -1,5 +1,5 @@
 #include "DHT.h"
-#define DHTPIN 5
+#define DHTPIN 3
 #define DHTTYPE DHT11
 
 DHT dht(DHTPIN, DHTTYPE);
@@ -10,10 +10,10 @@ void setup() {
 }
 
 void loop() {
-  float light = analogRead(A0);
-  float moisture = analogRead(A1);
-  float humid  = dht.readHumidity();
+  int moisture = analogRead(A0);
+  int humid  = dht.readHumidity();
   float temp = dht.readTemperature();
+  int light = analogRead(A2);
   if (!isnan(humid) && !isnan(temp)) {
     Serial.print(temp);
     Serial.print(" ");
