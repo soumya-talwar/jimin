@@ -26,6 +26,10 @@ function setup() {
       $(`#${nothusband}`).html(`${nothusband} (idle)`);
     } else {
       $("#avatar").attr("src", `assets/${husband} 4.png`);
+      setTimeout(() => $("#readings").css({
+        width: $(".frame").eq(1).innerWidth(),
+        opacity: 1
+      }), 1000);
     }
   });
   $("#jimin, #seokjin").click(event => ipcRenderer.send("husband", event.target.id));
@@ -101,8 +105,8 @@ function setup() {
       ipcRenderer.send("chat", $("input").val())
   });
   ipcRenderer.on("sensors", (event, readings) => {
-    $("#temp").html(readings[0]);
-    $("#humid").html(readings[1]);
+    $("#temp").html(readings[0] + "°C");
+    $("#humid").html(readings[1] + "%");
     $("#light").html(readings[2]);
     $("#soil").html(readings[3]);
   });

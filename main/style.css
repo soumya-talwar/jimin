@@ -62,8 +62,18 @@ input::placeholder {
   color: #B5B5B5;
 }
 
-#infobar {
-  padding-top: 2rem;
+#header {
+  padding-top: 2.5em;
+}
+
+#title {
+  font-family: "Circular Std";
+  font-size: 2rem;
+  letter-spacing: 0.8rem;
+}
+
+#readings {
+  opacity: 0;
 }
 
 .label, #jimin, #seokjin, #hoseok {
