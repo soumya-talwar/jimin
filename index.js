@@ -9,6 +9,7 @@ const io = new Server(server);
 web.get("/", (request, response) => response.sendFile(__dirname + "/speech/voice.html"));
 server.listen(3000);
 const say = require("say");
+const player = require("play-sound")(opts = {});
 
 // const { dockStart } = require("@nlpjs/basic");
 // (async () => {
@@ -47,6 +48,7 @@ let husbands = {
   }
 };
 let husband = undefined;
+let selected = false;
 let thresholds = [25, 50, 300, 500];
 let totals = [
   [25, 25],
@@ -70,7 +72,8 @@ let jokes = [
   "My neighbour was afraid to plant a mango tree. I told him to 'grow a pear'.",
   "Why did the tomato blush? Because he saw the salad dressing!"
 ];
-let knock = ["Knock. Knock", "Leaf", "Leaf me alone"];
+let filter = false;
+let singing;
 
 app.whenReady().then(() => {
   const main = new BrowserWindow({
@@ -101,6 +104,8 @@ app.whenReady().then(() => {
       active = true;
     } else if (!(/^spouse/).test(reading) && active) {
       say.stop();
+      if (filter)
+        singing.kill();
       main.webContents.send("activate", false);
       main.webContents.send(voice ? "listen" : "read", false);
       if (voice)
@@ -109,7 +114,9 @@ app.whenReady().then(() => {
     }
   });
   ipcMain.on("husband", (event, member) => {
-    main.webContents.send("husband", member);
+    selected = true;
+    husband = member;
+    main.webContents.send("husband", husband);
   });
   ipcMain.on("mic", (event, status) => {
     if (active && !speaking) {
@@ -139,46 +146,65 @@ app.whenReady().then(() => {
       .process(text)
       .then(result => {
         speaking = true;
-        let reply = result.answers[0].answer;
+        let reply = result.answers[husband == "jimin" ? 0 : 1].answer;
+        if ((/boring/).test(result.intent)) {
+          if (husband == "seokjin")
+            reply += " " + jokes[Math.floor(Math.random() * jokes.length)];
+          else if (husband == "jimin")
+            filter = true;
+        }
         main.webContents.send("converse", [text, reply]);
         setTimeout(() => {
-          say.speak(reply, "Daniel", 1.0, () => {
-            speaking = false;
-            main.webContents.send("converse", []);
-            setTimeout(() => {
-              main.webContents.send(voice ? "listen" : "read", true);
-              if (voice)
-                io.emit("activate", true);
-            }, 500);
+          say.speak(reply, husband == "jimin" ? "Oliver" : "Daniel", 1.0, () => {
+            if (!filter) {
+              speaking = false;
+              main.webContents.send("converse", []);
+              setTimeout(() => {
+                main.webContents.send(voice ? "listen" : "read", true);
+                if (voice)
+                  io.emit("activate", true);
+              }, 500);
+            } else {
+              singing = player.play("music/filter.mp3", () => {
+                filter = false;
+                speaking = false;
+                main.webContents.send("converse", []);
+                main.webContents.send(voice ? "listen" : "read", true);
+                if (voice)
+                  io.emit("activate", true);
+              });
+            }
           });
         }, 1000);
         main.webContents.send(voice ? "listen" : "read", false);
       });
   }
   parser.on("data", reading => {
-    let readings = reading.split(" ");
-    main.webContents.send("sensors", readings);
-    for (let i = 0; i < readings.length; i++) {
-      let value = readings[i];
-      if (i == 1 ? (value < thresholds[i]) : (value > thresholds[i]))
-        husbands.jimin.values[i] = i == 1 ? ((thresholds[i] - value) * weights[i] / totals[i][0]) : ((value - thresholds[i]) * weights[i] / totals[i][1]);
-      else
-        husbands.seokjin.values[i] = i == 1 ? ((value - thresholds[i]) * weights[i] / totals[i][1]) : ((thresholds[i] - value) * weights[i] / totals[i][0]);
-    }
-    for (let husband in husbands) {
-      let sum = 0;
-      for (let value of husbands[husband].values) {
-        if (value)
-          sum += value;
+    if (!selected) {
+      let readings = reading.split(" ");
+      main.webContents.send("sensors", readings);
+      for (let i = 0; i < readings.length; i++) {
+        let value = readings[i];
+        if (i == 1 ? (value < thresholds[i]) : (value > thresholds[i]))
+          husbands.jimin.values[i] = i == 1 ? ((thresholds[i] - value) * weights[i] / totals[i][0]) : ((value - thresholds[i]) * weights[i] / totals[i][1]);
+        else
+          husbands.seokjin.values[i] = i == 1 ? ((value - thresholds[i]) * weights[i] / totals[i][1]) : ((thresholds[i] - value) * weights[i] / totals[i][0]);
       }
-      husbands[husband].average = sum / 13;
-    }
-    if (husbands.jimin.average >= husbands.seokjin.average && husband !== "jimin") {
-      husband = "jimin";
-      main.webContents.send("husband", husband);
-    } else if (husbands.seokjin.average >= husbands.jimin.average && husband !== "seokjin") {
-      husband = "seokjin";
-      main.webContents.send("husband", husband);
+      for (let husband in husbands) {
+        let sum = 0;
+        for (let value of husbands[husband].values) {
+          if (value)
+            sum += value;
+        }
+        husbands[husband].average = sum / 13;
+      }
+      if (husbands.jimin.average >= husbands.seokjin.average && husband !== "jimin") {
+        husband = "jimin";
+        main.webContents.send("husband", husband);
+      } else if (husbands.seokjin.average >= husbands.jimin.average && husband !== "seokjin") {
+        husband = "seokjin";
+        main.webContents.send("husband", husband);
+      }
     }
   });
 });

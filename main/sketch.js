@@ -26,10 +26,15 @@ function setup() {
       $(`#${nothusband}`).html(`${nothusband} (idle)`);
     } else {
       $("#avatar").attr("src", `assets/${husband} 4.png`);
-      setTimeout(() => $("#readings").css({
-        width: $(".frame").eq(1).innerWidth(),
-        opacity: 1
-      }), 1000);
+      setTimeout(() => {
+        $("#readings").css({
+          width: $(".frame").eq(1).innerWidth(),
+          opacity: 1
+        });
+        $("#creator").css({
+          top: $(".frame").eq(0).offset().top + $(".frame").eq(0).innerHeight() - $("#creator").innerHeight()
+        });
+      }, 1000);
     }
   });
   $("#jimin, #seokjin").click(event => ipcRenderer.send("husband", event.target.id));
