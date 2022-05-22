@@ -32,7 +32,8 @@ function setup() {
           opacity: 1
         });
         $("#creator").css({
-          top: $(".frame").eq(0).offset().top + $(".frame").eq(0).innerHeight() - $("#creator").innerHeight()
+          top: $(".frame").eq(0).offset().top + $(".frame").eq(0).innerHeight() - $("#creator").innerHeight(),
+          opacity: 1
         });
       }, 1000);
     }

@@ -63,7 +63,7 @@ let speaking = false;
 let jokes = [
   "What flowers kiss the best? Tulips!",
   "What tree can you hold hands with? A palm tree!",
-  "Did you know I once cut down a tree just by looking at it? It's true, I saw it with my own eyes!",
+  "Did you know I can cut down a tree just by looking at it? It's true, I saw it with my own eyes!",
   "You know I am really good at algebra? I can always find the root of the equation.",
   "My friend has a lot of friends. He's always branching out.",
   "How do trees get on the internet? They log on!",
