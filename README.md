@@ -1,4 +1,3 @@
-# jimin
-i build myself an ideal husband
+# Jimin
 
 the documentation will be updated soon
