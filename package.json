@@ -10,12 +10,9 @@
   "author": "soumya talwar",
   "license": "ISC",
   "dependencies": {
-    "@nlpjs/basic": "^4.23.4",
     "dotenv": "^17.2.3",
     "express": "^4.17.3",
-    "node-nlp": "^4.23.4",
     "openai": "^6.3.0",
-    "play-sound": "^1.1.5",
     "say": "^0.16.0",
     "serialport": "^10.3.0",
     "socket.io": "^4.4.1"
